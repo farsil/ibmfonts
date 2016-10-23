@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+DEST="/usr/share/fonts/misc/"
+SOURCES=(*.bdf)
+TARGETS=()
+
+for FILE in ${SOURCES[@]}; do
+    TARGETS+=("${FILE%.*}.pcf.gz")
+done
+
+while getopts ":ht:" ARG; do
+    case "$ARG" in
+        t) 
+            DEST="$OPTARG"
+            ;;
+        h)
+            printf "Usage: $0 [-h] [-t <PATH>]" 1>&2;
+            exit 0;
+            ;;
+    esac
+done
+
+cat << EOF > makefile
+.PHONY: all clean install
+
+all: ${TARGETS[*]}
+
+clean:
+	rm -f *.pcf.gz 
+
+install: all
+	install -d \$(DESTDIR)$DEST
+EOF
+
+for FILENAME in ${TARGETS[@]}; do
+    printf "\tinstall -Dm644 $FILENAME \$(DESTDIR)$DEST\n" >> makefile
+done
+
+printf "\n" >> makefile
+
+for (( i=0; i<${#TARGETS[*]}; i++ )); do
+    printf "${TARGETS[$i]}:\n" >> makefile
+    printf "\tbdftopcf ${SOURCES[$i]} | gzip > ${TARGETS[$i]}\n\n" >> makefile
+done
+
