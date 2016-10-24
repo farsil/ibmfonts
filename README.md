@@ -24,7 +24,7 @@ IBM MDA 9x14        | `-ibm-mda-normal-r-normal--14-100-96-96-c-90-iso10646-1`
 IBM VGA 8x16        | `-ibm-vga-normal-r-normal--16-120-96-96-c-80-iso10646-1`    
 IBM VGA 9x16        | `-ibm-vga-normal-r-normal--16-120-96-96-c-90-iso10646-1`    
 IBM VGA 16x16       | `-ibm-vga-normal-r-expanded--16-120-96-96-c-160-iso10646-1` 
-IBM BIOS 18x16      | `-ibm-vga-normal-r-expanded--16-120-96-96-c-180-iso10646-1`
+IBM VGA 18x16       | `-ibm-vga-normal-r-expanded--16-120-96-96-c-180-iso10646-1`
 
 # Credits
 VileR from [The Ultimate Oldschool PC Font Pack](http://int10h.org/oldschool-pc-fonts/) for his pixel-perfect reproductions of the old system fonts. I used his PxPlus fonts as a base.
