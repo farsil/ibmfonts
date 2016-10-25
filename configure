@@ -1,57 +1,60 @@
 #!/usr/bin/env bash
 
-PREFIX="/usr"
+PREFIX="/usr/local"
+FONTDIR="/share/fonts/ibm-fonts"
 
-ARGS=$(getopt -o p: --long prefix: -n 'configure' -- "$@")
-eval set -- "$ARGS"
+eval set -- "$(getopt -o d --long prefix:,fontdir: -n 'configure' -- "$@")"
 
 while true ; do
     case "$1" in
         --prefix)
             PREFIX="$2"; shift 2 ;;
+        --fontdir)
+            FONTDIR="$2"; shift 2 ;;
         --)
             shift; break ;;
         *)
-            echo $1
-            printf "usage: $0 [--prefix=<PATH>]"
+            printf "usage: $0 [--prefix=<PATH>] [--fontdir=<PATH>]"
             break ;;
     esac
 done
 
-SOURCES=(*.bdf)
-TARGETS=()
-DEST="$PREFIX/share/fonts/misc"
+ALL="all:"
+INSTALL="install: all
+	install -dm755 \$(DESTDIR)\$(fontdir)"
+UNINSTALL="uninstall:"
+TARGETS=""
 
-for FILE in ${SOURCES[@]}; do
-    TARGETS+=("${FILE%.*}.pcf.gz")
+for BDF in *.bdf; do
+    PCF=$(basename -s .bdf $BDF).pcf.gz
+
+    ALL="$ALL $PCF"
+
+    INSTALL="$INSTALL
+	install -Dm644 $PCF \$(DESTDIR)\$(fontdir)"
+
+    UNINSTALL="$UNINSTALL
+	rm -f \$(DESTDIR)\$(fontdir)/$PCF"
+
+    TARGETS="$TARGETS
+$PCF:
+	bdftopcf $BDF | gzip > $PCF
+"
 done
 
 cat << EOF > makefile
 .PHONY: all clean install uninstall
 
-all: ${TARGETS[*]}
+prefix = $PREFIX
+fontdir = \$(prefix)$FONTDIR
+
+$ALL
 
 clean:
 	rm -f *.pcf.gz 
 
-install: all
-	install -dm755 \$(DESTDIR)$DEST
+$INSTALL
+
+$UNINSTALL
+$TARGETS
 EOF
-
-for FILENAME in ${TARGETS[@]}; do
-    printf "\tinstall -Dm644 $FILENAME \$(DESTDIR)$DEST\n" >> makefile
-done
-
-printf "\nuninstall:\n" >> makefile
-
-for FILENAME in ${TARGETS[@]}; do
-    printf "\trm -f \$(DESTDIR)$DEST/$FILENAME\n" >> makefile
-done
-
-printf "\n" >> makefile
-
-for (( i=0; i<${#TARGETS[*]}; i++ )); do
-    printf "${TARGETS[$i]}:\n" >> makefile
-    printf "\tbdftopcf ${SOURCES[$i]} | gzip > ${TARGETS[$i]}\n\n" >> makefile
-done
-
