@@ -1,60 +1,64 @@
-#!/usr/sh
+#!/bin/sh
 
 PREFIX="/usr/local"
 FONTDIR="/share/fonts/ibm-fonts"
+PCFDIR="pcf"
 
-eval set -- "$(getopt -o d --long prefix:,fontdir: -n 'configure' -- "$@")"
+eval set -- "`getopt -o d --long prefix:,fontdir:,pcfdir: -n 'configure' -- "$@"`"
 
 while true ; do
-    case "$1" in
-        --prefix)
-            PREFIX="$2"; shift 2 ;;
-        --fontdir)
-            FONTDIR="$2"; shift 2 ;;
-        --)
-            shift; break ;;
-        *)
-            printf "usage: $0 [--prefix=<PATH>] [--fontdir=<PATH>]"
-            break ;;
-    esac
+	case "$1" in
+		--prefix)
+			PREFIX="$2"; shift 2 ;;
+		--fontdir)
+			FONTDIR="$2"; shift 2 ;;
+		--pcfdir)
+			PCFDIR="$2"; shift 2 ;;
+		--)
+			shift; break ;;
+		*)
+			printf "usage: $0 [--prefix=<PATH>] [--fontdir=<PATH>] [--pcfdir=<PATH>]"
+			break ;;
+	esac
 done
 
-ALL="all:"
+ALL="all: \$(pcfdir)"
 INSTALL="install: all
 	install -dm755 \$(DESTDIR)\$(fontdir)"
 UNINSTALL="uninstall:"
-TARGETS=""
 
-for BDF in *.bdf; do
-    PCF=$(basename -s .bdf $BDF).pcf.gz
+for BDF in bdf/*.bdf; do
+	PCF="`basename -s .bdf $BDF`.pcf.gz"
 
-    ALL="$ALL $PCF"
+	ALL="$ALL \$(pcfdir)/$PCF"
 
-    INSTALL="$INSTALL
-	install -Dm644 $PCF \$(DESTDIR)\$(fontdir)"
+	INSTALL="$INSTALL
+	install -Dm644 \$(pcfdir)/$PCF \$(DESTDIR)\$(fontdir)"
 
-    UNINSTALL="$UNINSTALL
+	UNINSTALL="$UNINSTALL
 	rm -f \$(DESTDIR)\$(fontdir)/$PCF"
-
-    TARGETS="$TARGETS
-$PCF:
-	bdftopcf $BDF | gzip > $PCF
-"
 done
 
-cat << EOF > makefile
-.PHONY: all clean install uninstall
+cat << EOF > Makefile
+.PHONY: all clean install uninstall \$(pcfdir)
 
 prefix = $PREFIX
 fontdir = \$(prefix)$FONTDIR
+pcfdir = $PCFDIR
 
 $ALL
 
 clean:
-	rm -f *.pcf.gz 
+	rm -f \$(pcfdir)/*.pcf.gz 
 
 $INSTALL
 
 $UNINSTALL
-$TARGETS
+
+\$(pcfdir):
+	mkdir -p \$(pcfdir)	
+
+\$(pcfdir)/%.pcf.gz: bdf/%.bdf
+	bdftopcf \$< | gzip > \$@
+
 EOF
