@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/sh
 
 PREFIX="/usr/local"
 FONTDIR="/share/fonts/ibm-fonts"
