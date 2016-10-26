@@ -1,31 +1,26 @@
 #!/bin/sh
 
-if [ `uname -s | grep -i bsd` ]; then
-	MAKEVAR=bsd
-else
-	MAKEVAR=gnu
-fi
-
 PREFIX="/usr/local"
 FONTDIR="fonts/ibm-fonts"
 OBJDIR="pcf"
+MAKEVAR="gnu"
 
-eval set -- "`getopt -o d --long prefix:,fontdir:,objdir:,make-variant: -n 'configure' -- "$@"`"
+eval set -- "`getopt -o p:f:o:b --long prefix:,fontdir:,objdir:,bsd-make -n 'configure' -- "$@"`"
 
 while true ; do
 	case "$1" in
-		--prefix)
+		-p|--prefix)
 			PREFIX="$2"; shift 2 ;;
-		--fontdir)
+		-f|--fontdir)
 			FONTDIR="$2"; shift 2 ;;
-		--objdir)
+		-o|--objdir)
 			OBJDIR="$2"; shift 2 ;;
-		--make-variant)
-			MAKEVAR="$2"; shift 2 ;;
+		-b|--bsd-make)
+			MAKEVAR="bsd"; shift ;;
 		--)
 			shift; break ;;
 		*)
-			printf "usage: $0 [--make-variant=<bsd|gnu>] [--prefix=<PATH>] [--fontdir=<PATH>] [--objdir=<PATH>]"
+			printf "usage: $0 [--bsd-make] [--prefix=<PATH>] [--fontdir=<PATH>] [--objdir=<PATH>]"
 			break ;;
 	esac
 done
