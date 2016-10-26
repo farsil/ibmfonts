@@ -1,10 +1,16 @@
 #!/bin/sh
 
-PREFIX="/usr/local"
-FONTDIR="/share/fonts/ibm-fonts"
-PCFDIR="pcf"
+if [ `uname -s | grep -i bsd` ]; then
+	MAKEVAR=bsd
+else
+	MAKEVAR=gnu
+fi
 
-eval set -- "`getopt -o d --long prefix:,fontdir:,pcfdir: -n 'configure' -- "$@"`"
+PREFIX="/usr/local"
+FONTDIR="fonts/ibm-fonts"
+OBJDIR="pcf"
+
+eval set -- "`getopt -o d --long prefix:,fontdir:,objdir:,make-variant: -n 'configure' -- "$@"`"
 
 while true ; do
 	case "$1" in
@@ -12,53 +18,73 @@ while true ; do
 			PREFIX="$2"; shift 2 ;;
 		--fontdir)
 			FONTDIR="$2"; shift 2 ;;
-		--pcfdir)
-			PCFDIR="$2"; shift 2 ;;
+		--objdir)
+			OBJDIR="$2"; shift 2 ;;
+		--make-variant)
+			MAKEVAR="$2"; shift 2 ;;
 		--)
 			shift; break ;;
 		*)
-			printf "usage: $0 [--prefix=<PATH>] [--fontdir=<PATH>] [--pcfdir=<PATH>]"
+			printf "usage: $0 [--make-variant=<bsd|gnu>] [--prefix=<PATH>] [--fontdir=<PATH>] [--objdir=<PATH>]"
 			break ;;
 	esac
 done
 
-ALL="all: \$(pcfdir)"
-INSTALL="install: all
+if [ "$MAKEVAR" = bsd ]; then
+	SRCDECL=".PATH.bdf: \$(.CURDIR)/bdf"
+	OBJDECL=".OBJDIR: \$(OBJDIR:U$OBJDIR)"
+	BUILDTARGET=".bdf.pcf.gz:"
+	OBJPRE=""
+else
+	SRCDECL="VPATH = \$(CURDIR)/bdf"
+	OBJDECL="OBJDIR = $OBJDIR"
+	BUILDTARGET="\$(OBJDIR)/%.pcf.gz: %.bdf"
+	OBJPRE="\$(OBJDIR)/"
+fi
+
+ALLRULE="all:"
+
+INSTALLRULE="install: all
 	install -dm755 \$(DESTDIR)\$(fontdir)"
-UNINSTALL="uninstall:"
+
+UNINSTALLRULE="uninstall:"
 
 for BDF in bdf/*.bdf; do
 	PCF="`basename -s .bdf $BDF`.pcf.gz"
 
-	ALL="$ALL \$(pcfdir)/$PCF"
+	ALLRULE="$ALLRULE $OBJPRE$PCF"
 
-	INSTALL="$INSTALL
-	install -Dm644 \$(pcfdir)/$PCF \$(DESTDIR)\$(fontdir)"
+	INSTALLRULE="$INSTALLRULE
+	install -Dm644 $OBJPRE$PCF \$(DESTDIR)\$(fontdir)"
 
-	UNINSTALL="$UNINSTALL
+	UNINSTALLRULE="$UNINSTALLRULE
 	rm -f \$(DESTDIR)\$(fontdir)/$PCF"
 done
 
+mkdir -p "$OBJDIR"
+
 cat << EOF > Makefile
-.PHONY: all clean install uninstall \$(pcfdir)
+.PHONY: all clean install uninstall
+.SUFFIXES:
+.SUFFIXES: .bdf .pcf.gz
+
+$SRCDECL
+$OBJDECL
 
 prefix = $PREFIX
-fontdir = \$(prefix)$FONTDIR
-pcfdir = $PCFDIR
+datarootdir = \$(prefix)/share
+fontdir = \$(datarootdir)/$FONTDIR
 
-$ALL
+$ALLRULE
 
 clean:
-	rm -f \$(pcfdir)/*.pcf.gz 
+	rm -f ${OBJPRE}*.pcf.gz 
 
-$INSTALL
+$INSTALLRULE
 
-$UNINSTALL
+$UNINSTALLRULE
 
-\$(pcfdir):
-	mkdir -p \$(pcfdir)	
-
-\$(pcfdir)/%.pcf.gz: bdf/%.bdf
+$BUILDTARGET
 	bdftopcf \$< | gzip > \$@
 
 EOF
