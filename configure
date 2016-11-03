@@ -1,83 +1,117 @@
 #!/bin/sh
 
 PREFIX="/usr/local"
-FONTDIR="fonts/ibm-fonts"
-OBJDIR="pcf"
+SRCDIR=""
+OBJDIR=""
+PNAME=""
 MAKEVAR="gnu"
 
-eval set -- "`getopt -o p:f:o:b --long prefix:,fontdir:,objdir:,bsd-make -n 'configure' -- "$@"`"
+eval set -- "`getopt -o p:n:o:s:b --long prefix:,objdir:,srcdir:,package-name:,bsd-make -n "$0" -- "$@"`"
 
 while true ; do
 	case "$1" in
 		-p|--prefix)
 			PREFIX="$2"; shift 2 ;;
-		-f|--fontdir)
-			FONTDIR="$2"; shift 2 ;;
 		-o|--objdir)
 			OBJDIR="$2"; shift 2 ;;
+		-s|--srcdir)
+			SRCDIR="$2"; shift 2 ;;
 		-b|--bsd-make)
 			MAKEVAR="bsd"; shift ;;
+		-n|--package-name)
+			PNAME="$2"; shift 2 ;;
 		--)
 			shift; break ;;
 		*)
-			printf "usage: $0 [--bsd-make] [--prefix=<PATH>] [--fontdir=<PATH>] [--objdir=<PATH>]"
-			break ;;
+			exit 1 ;;
 	esac
 done
 
 if [ "$MAKEVAR" = bsd ]; then
-	SRCDECL=".PATH.bdf: \$(.CURDIR)/bdf"
-	OBJDECL=".OBJDIR: \$(OBJDIR:U$OBJDIR)"
+	setobjdecl() { OBJDECL=".OBJDIR: \$(objdir:U$1)"; }
+
+	CURDIR="\$(.CURDIR)"
+	SHELLDECL=".SHELL: name=sh path=/bin/sh"
+	SRCDECL=".PATH.bdf: \$(srcdir)"
 	BUILDTARGET=".bdf.pcf.gz:"
-	OBJPRE=""
+	TARGETS="\$(PCF)"
+	INSTALLED="\$(PCF:@.FILE.@\$(DESTDIR)\$(installdir)/\$(.FILE.)@)"
 else
-	SRCDECL="VPATH = \$(CURDIR)/bdf"
-	OBJDECL="OBJDIR = $OBJDIR"
-	BUILDTARGET="\$(OBJDIR)/%.pcf.gz: %.bdf"
-	OBJPRE="\$(OBJDIR)/"
+	setobjdecl() { OBJDECL="objdir = $1"; }
+
+	CURDIR="\$(CURDIR)"
+	SHELLDECL="SHELL = /bin/sh"
+	SRCDECL="vpath %.bdf \$(srcdir)"
+	BUILDTARGET="\$(objdir)/%.pcf.gz: %.bdf"
+	TARGETS="\$(addprefix \$(objdir)/, \$(PCF))"
+	INSTALLED="\$(addprefix \$(DESTDIR)\$(installdir)/, \$(PCF))"
 fi
 
-ALLRULE="all:"
+if [ -z "$SRCDIR" ]; then
+	SRCDIR="$CURDIR/bdf"
+else
+	SRCDIR="\$(prefix)/$SRCDIR"
+	[ -z "$PNAME" ] || SRCDIR="$SRCDIR/$PNAME"
+fi
 
-INSTALLRULE="install: all
-	install -dm755 \$(DESTDIR)\$(fontdir)"
+if [ -z "$OBJDIR" ]; then
+	OBJPATH="pcf"
+	OBJDIR="pcf"
+else
+	[ -z "$PNAME" ] || OBJDIR="$OBJDIR/$PNAME"
+	OBJPATH="$PREFIX/$OBJDIR"
+	OBJDIR="\$(prefix)/$OBJDIR"
+fi
 
-UNINSTALLRULE="uninstall:"
+setobjdecl "$OBJDIR"
+
+if [ -z "$PNAME" ]; then
+	INSTALLDIR="\$(fontdir)/misc"
+else
+	INSTALLDIR="\$(fontdir)/$PNAME"
+fi
 
 for BDF in bdf/*.bdf; do
-	PCF="`basename -s .bdf $BDF`.pcf.gz"
-
-	ALLRULE="$ALLRULE $OBJPRE$PCF"
-
-	INSTALLRULE="$INSTALLRULE
-	install -Dm644 $OBJPRE$PCF \$(DESTDIR)\$(fontdir)"
-
-	UNINSTALLRULE="$UNINSTALLRULE
-	rm -f \$(DESTDIR)\$(fontdir)/$PCF"
+	if [ -z "$PCF" ]; then
+		PCF="`basename -s .bdf $BDF`.pcf.gz"
+	else
+		PCF="$PCF `basename -s .bdf $BDF`.pcf.gz"
+	fi
 done
 
-mkdir -p "$OBJDIR"
+mkdir -p "$OBJPATH"
 
 cat << EOF > Makefile
+$SHELLDECL
+
 .PHONY: all clean install uninstall
 .SUFFIXES:
 .SUFFIXES: .bdf .pcf.gz
 
+prefix = $PREFIX
+srcdir = $SRCDIR
+datarootdir = \$(prefix)/share
+fontdir = \$(datarootdir)/fonts
+installdir = $INSTALLDIR
+
 $SRCDECL
 $OBJDECL
 
-prefix = $PREFIX
-datarootdir = \$(prefix)/share
-fontdir = \$(datarootdir)/$FONTDIR
+PCF = $PCF
 
-$ALLRULE
+TARGETS = $TARGETS
+
+all: \$(TARGETS)
 
 clean:
-	rm -f ${OBJPRE}*.pcf.gz 
+	rm -f \$(TARGETS)
 
-$INSTALLRULE
+install: all
+	install -dm755 \$(DESTDIR)\$(installdir)
+	install -D -m 644 -t \$(DESTDIR)\$(installdir) \$(TARGETS)
 
-$UNINSTALLRULE
+uninstall:
+	rm -f $INSTALLED 
 
 $BUILDTARGET
 	bdftopcf \$< | gzip > \$@
