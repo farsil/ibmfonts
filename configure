@@ -50,7 +50,7 @@ fi
 case "$SRCDIR" in
     '') SRCDIR="$CURDIR/bdf" ;;
     /*) ;;
-    *) SRCDIR="\$(prefix)/$SRCDIR" ;;
+    *) SRCDIR="\$(prefix)/src/$SRCDIR" ;;
 esac
 
 case "$OBJDIR" in
@@ -60,7 +60,7 @@ case "$OBJDIR" in
     /*) mkdir -p "$OBJDIR"
         ;;
     *)  mkdir -p "$PREFIX/$OBJDIR"
-        OBJDIR="\$(prefix)/$OBJDIR"
+        OBJDIR="\$(prefix)/obj/$OBJDIR"
         ;;
 esac
 
