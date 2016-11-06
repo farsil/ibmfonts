@@ -3,10 +3,10 @@
 PREFIX="/usr/local"
 SRCDIR=""
 OBJDIR=""
-PNAME=""
+INSTALLDIR=""
 MAKEVAR="gnu"
 
-eval set -- "`getopt -o p:n:o:s:b --long prefix:,objdir:,srcdir:,package-name:,bsd-make -n "$0" -- "$@"`"
+eval set -- "`getopt -o p:i:o:s:b --long prefix:,objdir:,srcdir:,installdir:,bsd-make -n "$0" -- "$@"`"
 
 while true ; do
 	case "$1" in
@@ -18,8 +18,8 @@ while true ; do
 			SRCDIR="$2"; shift 2 ;;
 		-b|--bsd-make)
 			MAKEVAR="bsd"; shift ;;
-		-n|--package-name)
-			PNAME="$2"; shift 2 ;;
+		-i|--installdir)
+			INSTALLDIR="$2"; shift 2 ;;
 		--)
 			shift; break ;;
 		*)
@@ -33,7 +33,7 @@ if [ "$MAKEVAR" = bsd ]; then
 	CURDIR="\$(.CURDIR)"
 	SHELLDECL=".SHELL: name=sh path=/bin/sh"
 	SRCDECL=".PATH.bdf: \$(srcdir)"
-	BUILDTARGET=".bdf.pcf.gz:"
+	BUILDRULE=".bdf.pcf.gz:"
 	TARGETS="\$(PCF)"
 	INSTALLED="\$(PCF:@.FILE.@\$(DESTDIR)\$(installdir)/\$(.FILE.)@)"
 else
@@ -42,34 +42,35 @@ else
 	CURDIR="\$(CURDIR)"
 	SHELLDECL="SHELL = /bin/sh"
 	SRCDECL="vpath %.bdf \$(srcdir)"
-	BUILDTARGET="\$(objdir)/%.pcf.gz: %.bdf"
+	BUILDRULE="\$(objdir)/%.pcf.gz: %.bdf"
 	TARGETS="\$(addprefix \$(objdir)/, \$(PCF))"
 	INSTALLED="\$(addprefix \$(DESTDIR)\$(installdir)/, \$(PCF))"
 fi
 
-if [ -z "$SRCDIR" ]; then
-	SRCDIR="$CURDIR/bdf"
-else
-	SRCDIR="\$(prefix)/$SRCDIR"
-	[ -z "$PNAME" ] || SRCDIR="$SRCDIR/$PNAME"
-fi
+case "$SRCDIR" in
+    '') SRCDIR="$CURDIR/bdf" ;;
+    /*) ;;
+    *) SRCDIR="\$(prefix)/$SRCDIR" ;;
+esac
 
-if [ -z "$OBJDIR" ]; then
-	OBJPATH="pcf"
-	OBJDIR="pcf"
-else
-	[ -z "$PNAME" ] || OBJDIR="$OBJDIR/$PNAME"
-	OBJPATH="$PREFIX/$OBJDIR"
-	OBJDIR="\$(prefix)/$OBJDIR"
-fi
+case "$OBJDIR" in
+    '') mkdir -p `pwd`/pcf
+        OBJDIR="$CURDIR/pcf"
+        ;;
+    /*) mkdir -p "$OBJDIR"
+        ;;
+    *)  mkdir -p "$PREFIX/$OBJDIR"
+        OBJDIR="\$(prefix)/$OBJDIR"
+        ;;
+esac
 
 setobjdecl "$OBJDIR"
 
-if [ -z "$PNAME" ]; then
-	INSTALLDIR="\$(fontdir)/misc"
-else
-	INSTALLDIR="\$(fontdir)/$PNAME"
-fi
+case "$INSTALLDIR" in
+    '') INSTALLDIR="\$(fontdir)/misc" ;;
+    /*) ;;
+    *) INSTALLDIR="\$(fontdir)/$INSTALLDIR" ;;
+esac
 
 for BDF in bdf/*.bdf; do
 	if [ -z "$PCF" ]; then
@@ -78,8 +79,6 @@ for BDF in bdf/*.bdf; do
 		PCF="$PCF `basename -s .bdf $BDF`.pcf.gz"
 	fi
 done
-
-mkdir -p "$OBJPATH"
 
 cat << EOF > Makefile
 $SHELLDECL
@@ -113,7 +112,7 @@ install: all
 uninstall:
 	rm -f $INSTALLED 
 
-$BUILDTARGET
+$BUILDRULE
 	bdftopcf \$< | gzip > \$@
 
 EOF
