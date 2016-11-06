@@ -8,8 +8,10 @@ In order to install the fonts with default settings, run (if necessary as root):
     cd ibmfonts
     ./configure
     make clean install
-    
-The default behaviour of `configure` is to look for sources in `./bdf`, compile fonts in `./pcf`, and install the fonts in `/usr/local/share/fonts`. `configure` automatically creates `objdir` if it does not exist.
+
+After installation, remember to update your font cache.
+
+The default behaviour of `configure` is to look for sources in `./bdf`, compile fonts in `./pcf`, and install the fonts in `/usr/local/share/fonts/misc`. `configure` automatically creates `objdir` if it does not exist. 
 
 You can pass several command line arguments to `configure`:
 
@@ -25,6 +27,8 @@ If `srcdir` is set and is a relative path, its parent directory will be `$(prefi
 From the directory you cloned this repository into, run (if necessary as root):
 
     make uninstall
+    
+You should update your font cache again.
 
 # Font Preview 
 ## IBM BIOS 8x8
