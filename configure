@@ -9,57 +9,57 @@ MAKEVAR="gnu"
 eval set -- "`getopt -o p:i:o:s:b --long prefix:,objdir:,srcdir:,installdir:,bsd-make -n "$0" -- "$@"`"
 
 while true ; do
-	case "$1" in
-		-p|--prefix)
-			PREFIX="$2"; shift 2 ;;
-		-o|--objdir)
-			OBJDIR="$2"; shift 2 ;;
-		-s|--srcdir)
-			SRCDIR="$2"; shift 2 ;;
-		-b|--bsd-make)
-			MAKEVAR="bsd"; shift ;;
-		-i|--installdir)
-			INSTALLDIR="$2"; shift 2 ;;
-		--)
-			shift; break ;;
-		*)
-			exit 1 ;;
-	esac
+    case "$1" in
+        -p|--prefix)
+            PREFIX="$2"; shift 2 ;;
+        -o|--objdir)
+            OBJDIR="$2"; shift 2 ;;
+        -s|--srcdir)
+            SRCDIR="$2"; shift 2 ;;
+        -b|--bsd-make)
+            MAKEVAR="bsd"; shift ;;
+        -i|--installdir)
+            INSTALLDIR="$2"; shift 2 ;;
+        --)
+            shift; break ;;
+        *)
+            exit 1 ;;
+    esac
 done
 
 if [ "$MAKEVAR" = bsd ]; then
-	setobjdecl() { OBJDECL=".OBJDIR: \$(objdir:U$1)"; }
+    CURDIR="\$(.CURDIR)"
+    SHELLDECL=".SHELL: name=sh path=/bin/sh"
+    SRCDECL=".PATH.bdf: \$(srcdir)"
+    BUILDRULE=".bdf.pcf.gz:"
+    COMPILED="\$(PCF)"
+    INSTALLED="\$(PCF:@.FILE.@\$(DESTDIR)\$(installdir)/\$(.FILE.)@)"
 
-	CURDIR="\$(.CURDIR)"
-	SHELLDECL=".SHELL: name=sh path=/bin/sh"
-	SRCDECL=".PATH.bdf: \$(srcdir)"
-	BUILDRULE=".bdf.pcf.gz:"
-	TARGETS="\$(PCF)"
-	INSTALLED="\$(PCF:@.FILE.@\$(DESTDIR)\$(installdir)/\$(.FILE.)@)"
+    setobjdecl() { OBJDECL=".OBJDIR: \$(objdir:U$1)"; }
 else
-	setobjdecl() { OBJDECL="objdir = $1"; }
+    CURDIR="\$(CURDIR)"
+    SHELLDECL="SHELL = /bin/sh"
+    SRCDECL="vpath %.bdf \$(srcdir)"
+    BUILDRULE="\$(objdir)/%.pcf.gz: %.bdf"
+    COMPILED="\$(addprefix \$(objdir)/, \$(PCF))"
+    INSTALLED="\$(addprefix \$(DESTDIR)\$(installdir)/, \$(PCF))"
 
-	CURDIR="\$(CURDIR)"
-	SHELLDECL="SHELL = /bin/sh"
-	SRCDECL="vpath %.bdf \$(srcdir)"
-	BUILDRULE="\$(objdir)/%.pcf.gz: %.bdf"
-	TARGETS="\$(addprefix \$(objdir)/, \$(PCF))"
-	INSTALLED="\$(addprefix \$(DESTDIR)\$(installdir)/, \$(PCF))"
+    setobjdecl() { OBJDECL="objdir = $1"; }
 fi
 
 case "$SRCDIR" in
-    '') SRCDIR="$CURDIR/bdf" ;;
-    /*) ;;
-    *) SRCDIR="\$(prefix)/src/$SRCDIR" ;;
+	'') SRCDIR="$CURDIR/bdf" ;;
+	/*) ;;
+	*)  SRCDIR="\$(prefix)/src/$SRCDIR" ;;
 esac
 
 case "$OBJDIR" in
-    '') mkdir -p `pwd`/pcf
+	'') mkdir -p `pwd`/pcf
         OBJDIR="$CURDIR/pcf"
         ;;
-    /*) mkdir -p "$OBJDIR"
+	/*) mkdir -p "$OBJDIR"
         ;;
-    *)  mkdir -p "$PREFIX/$OBJDIR"
+	*)  mkdir -p "$PREFIX/obj/$OBJDIR"
         OBJDIR="\$(prefix)/obj/$OBJDIR"
         ;;
 esac
@@ -67,18 +67,10 @@ esac
 setobjdecl "$OBJDIR"
 
 case "$INSTALLDIR" in
-    '') INSTALLDIR="\$(fontdir)/misc" ;;
-    /*) ;;
-    *) INSTALLDIR="\$(fontdir)/$INSTALLDIR" ;;
+	'') INSTALLDIR="\$(fontdir)/misc" ;;
+	/*) ;;
+	*)  INSTALLDIR="\$(fontdir)/$INSTALLDIR" ;;
 esac
-
-for BDF in bdf/*.bdf; do
-	if [ -z "$PCF" ]; then
-		PCF="`basename -s .bdf $BDF`.pcf.gz"
-	else
-		PCF="$PCF `basename -s .bdf $BDF`.pcf.gz"
-	fi
-done
 
 cat << EOF > Makefile
 $SHELLDECL
@@ -96,21 +88,26 @@ installdir = $INSTALLDIR
 $SRCDECL
 $OBJDECL
 
-PCF = $PCF
+PCF = ib16x16u.pcf.gz ib16x8u.pcf.gz ib8x16u.pcf.gz ib8x8u.pcf.gz \\
+      ic16x16u.pcf.gz ic8x16u.pcf.gz ic8x8u.pcf.gz icl16x16u.pcf.gz \\
+      icl8x16u.pcf.gz icl8x8u.pcf.gz ie16x14u.pcf.gz ie18x14u.pcf.gz \\
+      ie8x14u.pcf.gz ie9x14u.pcf.gz im9x14u.pcf.gz iv16x16u.pcf.gz \\
+      iv18x16u.pcf.gz iv8x16u.pcf.gz iv9x16u.pcf.gz
 
-TARGETS = $TARGETS
+COMPILED = $COMPILED
+INSTALLED = $INSTALLED
 
-all: \$(TARGETS)
+all: \$(COMPILED)
 
 clean:
-	rm -f \$(TARGETS)
+	rm -f \$(COMPILED)
 
 install: all
 	install -dm755 \$(DESTDIR)\$(installdir)
-	install -D -m 644 -t \$(DESTDIR)\$(installdir) \$(TARGETS)
+	install -D -m 644 -t \$(DESTDIR)\$(installdir) \$(COMPILED)
 
 uninstall:
-	rm -f $INSTALLED 
+	rm -f \$(INSTALLED)
 
 $BUILDRULE
 	bdftopcf \$< | gzip > \$@
