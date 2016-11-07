@@ -136,7 +136,7 @@ You can check whether the font is detected by X by running either `xfontsel` or
 *Filename:* ie9x14u.bdf  
 
 ## IBM EGA 18x14
-![IBM EGA 18x14](https://farsil.ibmfontsgithub.io/ibmfonts/images/preview/dark/ie18x14u.png)  
+![IBM EGA 18x14](https://farsil.github.io/ibmfonts/images/preview/dark/ie18x14u.png)  
 *XLFD Name:* -ibm-ega-normal-r-expanded--14-100-96-96-c-180-iso10646-1  
 *Filename:* ie18x14u.bdf  
 
