@@ -18,6 +18,12 @@ The default behaviour of `configure` is to look for sources in `./bdf`, compile
 fonts in `./pcf`, and install the fonts in `/usr/local/share/fonts/misc`.
 `configure` automatically creates `objdir` if it does not exist.
 
+## AUR Package 
+If you use Arch Linux, there is an AUR package for these fonts named
+[ibm-fonts](https://aur.archlinux.org/packages/ibm-fonts/). You may use your
+favourite AUR helper or proceed with manual installation as described
+[here](https://wiki.archlinux.org/index.php/Arch_User_Repository#Installing_packages).
+
 # Configuration script
 You can pass several command line arguments to `configure`:
 
