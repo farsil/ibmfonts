@@ -8,14 +8,14 @@
     <link rel="stylesheet" type="text/css" href="stylesheets/github-dark.css" media="screen">
     <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
 
-    <title>Ibmfonts by farsil</title>
+    <title>IBM Fonts by farsil</title>
   </head>
 
   <body>
 
     <header>
       <div class="container">
-        <h1>Ibmfonts</h1>
+        <h1>IBM Fonts</h1>
         <h2>IBM Fonts in BDF format</h2>
 
         <section id="downloads">
@@ -28,104 +28,233 @@
 
     <div class="container">
       <section id="main_content">
-        <p>A collection of monospaced, bitmap fonts in BDF format that origin from IBM text mode and system fonts. They include extended latin, greek, cyrillic and hebrew scripts and several extra characters, for a total of 782 glyphs each.</p>
+        <p>A collection of monospaced, bitmap fonts in BDF format that origin from IBM
+text mode and system fonts. They include extended latin, greek, cyrillic and
+hebrew scripts and several extra characters, for a total of 782 glyphs each.
+The fonts are in BDF 2.1 format and fully compatible with applications that
+make use of either Xft or XLFD.</p>
 
 <h1>
-<a id="font-information" class="anchor" href="#font-information" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Font Information</h1>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installation</h1>
 
-<p>The fonts are in BDF 2.1 format and fully compatible with applications that make use of either Xft or XLFD. The correspondence between the two naming conventions is shown in the following table:</p>
+<p>In order to install the fonts with default settings, run (if necessary as
+root):</p>
 
-<table>
-<thead>
-<tr>
-<th>Xft Name</th>
-<th>XLFD Name</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>IBM BIOS 8x16</td>
-<td><code>-ibm-bios-normal-r-condensed--16-120-96-96-c-80-iso10646-1</code></td>
-</tr>
-<tr>
-<td>IBM BIOS 8x8</td>
-<td><code>-ibm-bios-normal-r-normal--8-60-96-96-c-80-iso10646-1</code></td>
-</tr>
-<tr>
-<td>IBM BIOS 16x16</td>
-<td><code>-ibm-bios-normal-r-normal--16-120-96-96-c-160-iso10646-1</code></td>
-</tr>
-<tr>
-<td>IBM BIOS 16x8</td>
-<td><code>-ibm-bios-normal-r-expanded--8-60-96-96-c-160-iso10646-1</code></td>
-</tr>
-<tr>
-<td>IBM CGA Light 8x16</td>
-<td><code>-ibm-cga-light-r-condensed--16-120-96-96-c-80-iso10646-1</code></td>
-</tr>
-<tr>
-<td>IBM CGA 8x16</td>
-<td><code>-ibm-cga-normal-r-condensed--16-120-96-96-c-80-iso10646-1</code></td>
-</tr>
-<tr>
-<td>IBM CGA Light 8x8</td>
-<td><code>-ibm-cga-light-r-normal--8-60-96-96-c-80-iso10646-1</code></td>
-</tr>
-<tr>
-<td>IBM CGA Light 16x16</td>
-<td><code>-ibm-cga-light-r-normal--16-120-96-96-c-160-iso10646-1</code></td>
-</tr>
-<tr>
-<td>IBM CGA 8x8</td>
-<td><code>-ibm-cga-normal-r-normal--8-60-96-96-c-80-iso10646-1</code></td>
-</tr>
-<tr>
-<td>IBM CGA 16x16</td>
-<td><code>-ibm-cga-normal-r-normal--16-120-96-96-c-160-iso10646-1</code></td>
-</tr>
-<tr>
-<td>IBM EGA 8x14</td>
-<td><code>-ibm-ega-normal-r-normal--14-100-96-96-c-80-iso10646-1</code></td>
-</tr>
-<tr>
-<td>IBM EGA 9x14</td>
-<td><code>-ibm-ega-normal-r-normal--14-100-96-96-c-90-iso10646-1</code></td>
-</tr>
-<tr>
-<td>IBM EGA 16x14</td>
-<td><code>-ibm-ega-normal-r-expanded--14-100-96-96-c-160-iso10646-1</code></td>
-</tr>
-<tr>
-<td>IBM EGA 18x14</td>
-<td><code>-ibm-ega-normal-r-expanded--14-100-96-96-c-180-iso10646-1</code></td>
-</tr>
-<tr>
-<td>IBM MDA 9x14</td>
-<td><code>-ibm-mda-normal-r-normal--14-100-96-96-c-90-iso10646-1</code></td>
-</tr>
-<tr>
-<td>IBM VGA 8x16</td>
-<td><code>-ibm-vga-normal-r-normal--16-120-96-96-c-80-iso10646-1</code></td>
-</tr>
-<tr>
-<td>IBM VGA 9x16</td>
-<td><code>-ibm-vga-normal-r-normal--16-120-96-96-c-90-iso10646-1</code></td>
-</tr>
-<tr>
-<td>IBM VGA 16x16</td>
-<td><code>-ibm-vga-normal-r-expanded--16-120-96-96-c-160-iso10646-1</code></td>
-</tr>
-<tr>
-<td>IBM BIOS 18x16</td>
-<td><code>-ibm-vga-normal-r-expanded--16-120-96-96-c-180-iso10646-1</code></td>
-</tr>
-</tbody>
-</table>
+<pre><code>$ git clone https://github.com/farsil/ibmfonts.git
+$ cd ibmfonts
+$ ./configure
+# make clean install
+</code></pre>
+
+<p>The default behaviour of <code>configure</code> is to look for sources in <code>./bdf</code>, compile
+fonts in <code>./pcf</code>, and install the fonts in <code>/usr/local/share/fonts/misc</code>.
+<code>configure</code> automatically creates <code>objdir</code> if it does not exist.</p>
+
+<h1>
+<a id="configuration-script" class="anchor" href="#configuration-script" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Configuration script</h1>
+
+<p>You can pass several command line arguments to <code>configure</code>:</p>
+
+<pre><code>--prefix=&lt;PATH&gt;         Prefix for destination directories.
+--srcdir=&lt;PATH&gt;         Directory for the source font files.
+--objdir=&lt;PATH&gt;         Directory for the compiled font files.
+--installdir=&lt;PATH&gt;     Directory to install the fonts in.
+--bsd-make              Generate a bmake-friendly makefile.
+</code></pre>
+
+<p>If <code>srcdir</code> is set and is a relative path, its parent directory will be
+<code>$(prefix)/src</code>. If <code>objdir</code> is set and is a relative path, its parent
+directory will be <code>$(prefix)/obj</code>. If <code>installdir</code> is set and is a relative
+path, its parent directory will be <code>$(prefix)/share/fonts</code>. If you don't want
+this behaviour simply use absolute paths instead of relative ones.</p>
+
+<h1>
+<a id="removal" class="anchor" href="#removal" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Removal</h1>
+
+<p>From the directory you cloned this repository into, run:</p>
+
+<pre><code># make uninstall
+</code></pre>
+
+<h1>
+<a id="updating-the-font-cache" class="anchor" href="#updating-the-font-cache" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Updating the font cache</h1>
+
+<p>After installation or removal, it is important to update the font cache to
+reflect changes. For applications that use fontconfig, simply run:</p>
+
+<pre><code># fc-cache
+</code></pre>
+
+<p>Letting older applications like <code>xfontsel</code> detect the changes is more
+complicated. First, check that the installation directory (I will assume it's
+<code>/usr/local/share/fonts/misc</code> for the sake of the example) is in the X font
+path. You can verify that by running:</p>
+
+<pre><code>$ xset q
+</code></pre>
+
+<p>If it is not in the font path, you need to instruct X to read your font
+directory by adding a <code>FontPath</code> entry under the <code>Files</code> section in
+<code>/etc/X11/xorg.conf</code> (if the file does not exists, create it):</p>
+
+<pre><code>Section "Files"
+    # There might be other entries in the section
+    FontPath "/usr/local/share/fonts/misc"
+EndSection
+</code></pre>
+
+<p>After making sure the installation directory is in the font path, run:</p>
+
+<pre><code># mkfontdir /usr/local/share/fonts/misc
+# mkfontscale /usr/local/share/fonts/misc
+$ xset fp rehash
+</code></pre>
+
+<p>You can check whether the font is detected by X by running either <code>xfontsel</code> or
+<code>xlsfonts</code>.</p>
+
+<h1>
+<a id="font-preview" class="anchor" href="#font-preview" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Font Preview</h1>
+
+<h2>
+<a id="ibm-bios-8x8" class="anchor" href="#ibm-bios-8x8" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>IBM BIOS 8x8</h2>
+
+<p><img src="https://farsil.github.io/ibmfonts/images/preview/light/ib8x8u.png" alt="IBM BIOS 8x8"><br>
+<em>XLFD name:</em> -ibm-bios-normal-r-normal--8-60-96-96-c-80-iso10646-1<br>
+<em>Filename:</em> ib8x8u.bdf  </p>
+
+<h2>
+<a id="ibm-bios-16x8" class="anchor" href="#ibm-bios-16x8" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>IBM BIOS 16x8</h2>
+
+<p><img src="https://farsil.github.io/ibmfonts/images/preview/light/ib16x8u.png" alt="IBM BIOS 16x8"><br>
+<em>XLFD Name:</em> -ibm-bios-normal-r-expanded--8-60-96-96-c-160-iso10646-1<br>
+<em>Filename:</em> ib16x8u.bdf  </p>
+
+<h2>
+<a id="ibm-bios-16x16" class="anchor" href="#ibm-bios-16x16" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>IBM BIOS 16x16</h2>
+
+<p><img src="https://farsil.github.io/ibmfonts/images/preview/light/ib16x16u.png" alt="IBM BIOS 16x16"><br>
+<em>XLFD Name:</em> -ibm-bios-normal-r-normal--16-120-96-96-c-160-iso10646-1<br>
+<em>Filename:</em> ib16x16u.bdf  </p>
+
+<h2>
+<a id="ibm-bios-8x16" class="anchor" href="#ibm-bios-8x16" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>IBM BIOS 8x16</h2>
+
+<p><img src="https://farsil.github.io/ibmfonts/images/preview/light/ib8x16u.png" alt="IBM BIOS 8x16"><br>
+<em>XLFD Name:</em> -ibm-bios-normal-r-condensed--16-120-96-96-c-80-iso10646-1<br>
+<em>Filename:</em> ib8x16u.bdf  </p>
+
+<h2>
+<a id="ibm-cga-8x8" class="anchor" href="#ibm-cga-8x8" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>IBM CGA 8x8</h2>
+
+<p><img src="https://farsil.github.io/ibmfonts/images/preview/light/ic8x8u.png" alt="IBM CGA 8x8"><br>
+<em>XLFD Name:</em> -ibm-cga-normal-r-normal--8-60-96-96-c-80-iso10646-1<br>
+<em>Filename:</em> ic8x8u.bdf  </p>
+
+<h2>
+<a id="ibm-cga-16x16" class="anchor" href="#ibm-cga-16x16" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>IBM CGA 16x16</h2>
+
+<p><img src="https://farsil.github.io/ibmfonts/images/preview/light/ic16x16u.png" alt="IBM CGA 16x16"><br>
+<em>XLFD Name:</em> -ibm-cga-normal-r-normal--16-120-96-96-c-160-iso10646-1<br>
+<em>Filename:</em> ic16x16u.bdf  </p>
+
+<h2>
+<a id="ibm-cga-8x16" class="anchor" href="#ibm-cga-8x16" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>IBM CGA 8x16</h2>
+
+<p><img src="https://farsil.github.io/ibmfonts/images/preview/light/ic8x16u.png" alt="IBM CGA 8x16"><br>
+<em>XLFD Name:</em> -ibm-cga-normal-r-condensed--16-120-96-96-c-80-iso10646-1<br>
+<em>Filename:</em> ic8x16u.bdf  </p>
+
+<h2>
+<a id="ibm-cga-light-8x8" class="anchor" href="#ibm-cga-light-8x8" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>IBM CGA Light 8x8</h2>
+
+<p><img src="https://farsil.github.io/ibmfonts/images/preview/light/icl8x8u.png" alt="IBM CGA Light 8x8"><br>
+<em>XLFD Name:</em> -ibm-cga-light-r-normal--8-60-96-96-c-80-iso10646-1<br>
+<em>Filename:</em> icl8x8u.bdf  </p>
+
+<h2>
+<a id="ibm-cga-light-16x16" class="anchor" href="#ibm-cga-light-16x16" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>IBM CGA Light 16x16</h2>
+
+<p><img src="https://farsil.github.io/ibmfonts/images/preview/light/icl16x16u.png" alt="IBM CGA Light 16x16"><br>
+<em>XLFD Name:</em> -ibm-cga-light-r-normal--16-120-96-96-c-160-iso10646-1<br>
+<em>Filename:</em> icl16x16u.bdf  </p>
+
+<h2>
+<a id="ibm-cga-light-8x16" class="anchor" href="#ibm-cga-light-8x16" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>IBM CGA Light 8x16</h2>
+
+<p><img src="https://farsil.github.io/ibmfonts/images/preview/light/icl8x16u.png" alt="IBM CGA Light 8x16"><br>
+<em>XLFD Name:</em> -ibm-cga-light-r-condensed--16-120-96-96-c-80-iso10646-1<br>
+<em>Filename:</em> icl8x16u.bdf  </p>
+
+<h2>
+<a id="ibm-ega-8x14" class="anchor" href="#ibm-ega-8x14" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>IBM EGA 8x14</h2>
+
+<p><img src="https://farsil.github.io/ibmfonts/images/preview/light/ie8x14u.png" alt="IBM EGA 8x14"><br>
+<em>XLFD Name:</em> -ibm-ega-normal-r-normal--14-100-96-96-c-80-iso10646-1<br>
+<em>Filename:</em> ie8x14u.bdf  </p>
+
+<h2>
+<a id="ibm-ega-16x14" class="anchor" href="#ibm-ega-16x14" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>IBM EGA 16x14</h2>
+
+<p><img src="https://farsil.github.io/ibmfonts/images/preview/light/ie16x14u.png" alt="IBM EGA 16x14"><br>
+<em>XLFD Name:</em> -ibm-ega-normal-r-expanded--14-100-96-96-c-160-iso10646-1<br>
+<em>Filename:</em> ie16x14u.bdf  </p>
+
+<h2>
+<a id="ibm-ega-9x14" class="anchor" href="#ibm-ega-9x14" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>IBM EGA 9x14</h2>
+
+<p><img src="https://farsil.github.io/ibmfonts/images/preview/light/ie9x14u.png" alt="IBM EGA 9x14"><br>
+<em>XLFD Name:</em> -ibm-ega-normal-r-normal--14-100-96-96-c-90-iso10646-1<br>
+<em>Filename:</em> ie9x14u.bdf  </p>
+
+<h2>
+<a id="ibm-ega-18x14" class="anchor" href="#ibm-ega-18x14" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>IBM EGA 18x14</h2>
+
+<p><img src="https://farsil.github.io/ibmfonts/images/preview/light/ie18x14u.png" alt="IBM EGA 18x14"><br>
+<em>XLFD Name:</em> -ibm-ega-normal-r-expanded--14-100-96-96-c-180-iso10646-1<br>
+<em>Filename:</em> ie18x14u.bdf  </p>
+
+<h2>
+<a id="ibm-mda-9x14" class="anchor" href="#ibm-mda-9x14" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>IBM MDA 9x14</h2>
+
+<p><img src="https://farsil.github.io/ibmfonts/images/preview/light/im9x14u.png" alt="IBM MDA 9x14"><br>
+<em>XLFD Name:</em> -ibm-mda-normal-r-normal--14-100-96-96-c-90-iso10646-1<br>
+<em>Filename:</em> im9x14u.bdf  </p>
+
+<h2>
+<a id="ibm-vga-8x16" class="anchor" href="#ibm-vga-8x16" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>IBM VGA 8x16</h2>
+
+<p><img src="https://farsil.github.io/ibmfonts/images/preview/light/iv8x16u.png" alt="IBM VGA 8x16"><br>
+<em>XLFD Name:</em> -ibm-vga-normal-r-normal--16-120-96-96-c-80-iso10646-1<br>
+<em>Filename:</em> iv8x16u.bdf  </p>
+
+<h2>
+<a id="ibm-vga-16x16" class="anchor" href="#ibm-vga-16x16" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>IBM VGA 16x16</h2>
+
+<p><img src="https://farsil.github.io/ibmfonts/images/preview/light/iv16x16u.png" alt="IBM VGA 16x16"><br>
+<em>XLFD Name:</em> -ibm-vga-normal-r-expanded--16-120-96-96-c-160-iso10646-1<br>
+<em>Filename:</em> iv16x16u.bdf  </p>
+
+<h2>
+<a id="ibm-vga-9x16" class="anchor" href="#ibm-vga-9x16" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>IBM VGA 9x16</h2>
+
+<p><img src="https://farsil.github.io/ibmfonts/images/preview/light/iv9x16u.png" alt="IBM VGA 9x16"><br>
+<em>XLFD Name:</em> -ibm-vga-normal-r-normal--16-120-96-96-c-90-iso10646-1<br>
+<em>Filename:</em> iv9x16u.bdf  </p>
+
+<h2>
+<a id="ibm-vga-18x16" class="anchor" href="#ibm-vga-18x16" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>IBM VGA 18x16</h2>
+
+<p><img src="https://farsil.github.io/ibmfonts/images/preview/light/iv18x16u.png" alt="IBM VGA 18x16"><br>
+<em>XLFD Name:</em> -ibm-vga-normal-r-expanded--16-120-96-96-c-180-iso10646-1<br>
+<em>Filename:</em> iv18x16u.bdf  </p>
 
 <h1>
 <a id="credits" class="anchor" href="#credits" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Credits</h1>
 
-<p>VileR from <a href="http://int10h.org/oldschool-pc-fonts/">The Ultimate Oldschool PC Font Pack</a> for his pixel-perfect reproductions of the old system fonts. I used his PxPlus fonts as a base.</p>
+<p>VileR from <a href="http://int10h.org/oldschool-pc-fonts/">The Ultimate Oldschool PC Font Pack</a>
+for his pixel-perfect reproductions of these old system fonts. I used his
+PxPlus fonts as a base.</p>
       </section>
     </div>
 
