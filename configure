@@ -1,5 +1,19 @@
 #!/bin/sh
 
+check_existence() {
+    command -v "$1" >/dev/null 2>&1 || {
+        echo 'error: '"$1"' not found'
+        ERROR=1
+    }
+}
+
+check_existence install
+check_existence bdf2pcf
+check_existence gzip
+check_existence rm
+
+[ -n "$ERROR" ] && exit 1;
+
 PREFIX="/usr/local"
 SRCDIR=""
 OBJDIR=""
