@@ -8,7 +8,7 @@ check_existence() {
 }
 
 check_existence install
-check_existence bdf2pcf
+check_existence bdftopcf
 check_existence gzip
 check_existence rm
 
