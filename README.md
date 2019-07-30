@@ -77,7 +77,8 @@ You can check whether the font is detected by X by running either `xfontsel` or
 
 # Font Preview 
 ## IBM BIOS 8x8
-![IBM BIOS 8x8](https://farsil.github.io/ibmfonts/images/preview/dark/ib8x8u.png)  
+![IBM BIOS 8x8](https://farsil.github.io/ibmfonts/images/preview/dark/ib8x8u.png) [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Ffarsil%2Fibmfonts.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Ffarsil%2Fibmfonts?ref=badge_shield)
+ 
 *XLFD name:* -ibm-bios-normal-r-normal--8-60-96-96-c-80-iso10646-1  
 *Filename:* ib8x8u.bdf  
 
@@ -175,3 +176,7 @@ You can check whether the font is detected by X by running either `xfontsel` or
 VileR from [The Ultimate Oldschool PC Font Pack](http://int10h.org/oldschool-pc-fonts/)
 for his pixel-perfect reproductions of these old system fonts. I used his
 PxPlus fonts as a base.
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Ffarsil%2Fibmfonts.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Ffarsil%2Fibmfonts?ref=badge_large)
