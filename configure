@@ -116,7 +116,7 @@ clean:
 
 install: all
 	install -dm755 \$(DESTDIR)\$(installdir)
-	install -D -m 644 -t \$(DESTDIR)\$(installdir) \$(COMPILED)
+	install -m644 \$(COMPILED) \$(DESTDIR)\$(installdir)
 
 uninstall:
 	rm -f \$(INSTALLED)
