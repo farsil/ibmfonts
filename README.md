@@ -1,7 +1,7 @@
 # IBM fonts
 A collection of monospaced, bitmap fonts in BDF format that origin from IBM
 text mode and system fonts. They include extended latin, greek, cyrillic and
-hebrew scripts and several extra characters, for a total of 782 glyphs each.
+hebrew scripts and several extra characters, for a total of 750 glyphs each.
 The fonts are in BDF 2.1 format and fully compatible with applications that
 make use of either Xft or XLFD.
 
